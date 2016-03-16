@@ -12,6 +12,7 @@
   "author": "Tutorialzine",
   "license": "MIT",
   "dependencies": {
+    "jsonfile": "^2.2.3",
     "moment": "^2.10.2",
     "react": "^0.13.2"
   },

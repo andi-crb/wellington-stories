@@ -1,11 +1,15 @@
 /* https://coolors.co/app/121619-2d4739-09814a-bcb382-a09065 */
 
+body {
+	background-color: #555555;
+}
+
+
 .container {
 	max-width: 980px;
 	text-align: center;
 	margin: 20px auto;
-	background-color: #bcb382;
-	color: #121619;
+	background-color: #ffffff
 }
 
 h1 {

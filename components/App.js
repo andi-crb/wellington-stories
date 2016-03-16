@@ -5,6 +5,8 @@ var Map = require('./Map');
 var CurrentLocation = require('./CurrentLocation');
 var LocationList = require('./LocationList');
 
+var jsonfile = require('jsonfile')
+
 
 var App = React.createClass({
 
@@ -40,18 +42,10 @@ var App = React.createClass({
     this.setState({author: e.target.value})
   },
 
-	toggleFavorite(address){
-
-		if(this.isAddressInFavorites(address)){
-			this.removeFromFavorites(address);
-		}
-		else{
-			this.addToFavorites(address);
-		}
-
-	},
 
 	addToFavorites(address){
+
+
 
 		var favorites = this.state.favorites;
 		console.log("refs", this.refs.title.value, this.refs.title.author)
@@ -59,7 +53,9 @@ var App = React.createClass({
 			address: address,
 			timestamp: Date.now(),
 			author: this.state.author,
-			title: this.state.title
+			title: this.state.title,
+			lat: this.state.mapCoordinates.lat,
+			lng: this.state.mapCoordinates.lng
 		});
 
 		this.setState({
@@ -69,49 +65,8 @@ var App = React.createClass({
 		localStorage.favorites = JSON.stringify(favorites);
 	},
 
-	removeFromFavorites(address){
 
-		var favorites = this.state.favorites;
-		var index = -1;
 
-		for(var i = 0; i < favorites.length; i++){
-
-			if(favorites[i].address == address){
-				index = i;
-				break;
-			}
-
-		}
-
-		// If it was found, remove it from the favorites array
-
-		if(index !== -1){
-			
-			favorites.splice(index, 1);
-
-			this.setState({
-				favorites: favorites
-			});
-
-			localStorage.favorites = JSON.stringify(favorites);
-		}
-
-	},
-
-	isAddressInFavorites(address){
-
-		var favorites = this.state.favorites;
-
-		for(var i = 0; i < favorites.length; i++){
-
-			if(favorites[i].address == address){
-				return true;
-			}
-
-		}
-
-		return false;
-	},
 
 	searchForAddress(address){
 		var title = this.refs.title
@@ -119,8 +74,6 @@ var App = React.createClass({
 		
 		var self = this;
 
-		// We will use GMaps' geocode functionality,
-		// which is built on top of the Google Maps API
 
 		GMaps.geocode({
 			address: address,
@@ -154,12 +107,14 @@ var App = React.createClass({
 				<Search onSearch={this.searchForAddress} />
 
 				<Map lat={this.state.mapCoordinates.lat} lng={this.state.mapCoordinates.lng} />
-
-				<input type="text" ref="title" onChange={this.updatetitle} />
-				<input type="text" ref="author" onChange={this.updateauthor} />
+				<br />
+				<p>Title</p><input type="text" ref="title" onChange={this.updatetitle} />
+				<br />
+				<p>Author</p><input type="text" ref="author" onChange={this.updateauthor} />
+				<p></p>
 				<CurrentLocation address={this.state.currentAddress} 
-					favorite={this.isAddressInFavorites(this.state.currentAddress)} 
-					onFavoriteToggle={this.toggleFavorite} />
+					// favorite={this.isAddressInFavorites(this.state.currentAddress)} 
+					onFavoriteToggle={this.addToFavorites} />
 
 				<LocationList locations={this.state.favorites} activeLocationAddress={this.state.currentAddress}
 					onClick={this.searchForAddress} />
